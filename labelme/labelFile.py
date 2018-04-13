@@ -53,17 +53,21 @@ class LabelFile(object):
 
     def save(self, filename, shapes, imagePath, imageData=None,
              lineColor=None, fillColor=None):
-        if imageData is not None:
-            imageData = base64.b64encode(imageData).decode('utf-8')
-        data = dict(
-            shapes=shapes,
-            lineColor=lineColor,
-            fillColor=fillColor,
-            imagePath=imagePath,
-            imageData=imageData,
-        )
         try:
+            data = {}
+            with open(filename, 'rb' if PY2 else 'r') as f:
+                data = json.load(f)
+
             with open(filename, 'wb' if PY2 else 'w') as f:
+                if imageData is not None:
+                    imageData = base64.b64encode(imageData).decode('utf-8')
+                data = {**data, **dict(
+                    shapes=shapes,
+                    lineColor=lineColor,
+                    fillColor=fillColor,
+                    imagePath=imagePath,
+                    imageData=imageData,
+                )}
                 json.dump(data, f, ensure_ascii=True, indent=2)
             self.filename = filename
         except Exception as e:
