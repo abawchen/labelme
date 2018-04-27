@@ -681,6 +681,8 @@ class MainWindow(QtWidgets.QMainWindow, WindowMixin):
             for x, y in points:
                 shape.addPoint(QtCore.QPointF(x, y))
             shape.close()
+            if not shape.isClosed():
+                continue
             s.append(shape)
             self.addLabel(shape)
             if line_color:
